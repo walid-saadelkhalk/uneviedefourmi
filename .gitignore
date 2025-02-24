@@ -1,0 +1,39 @@
+# Ignorer les dossiers de build
+build/
+cmake-build-debug/
+cmake-build-release/
+
+# Ignorer les fichiers générés par CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Ignorer les fichiers d'objets et binaires
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.lib
+*.exe
+*.out
+
+# Ignorer les logs et fichiers temporaires
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Ignorer les fichiers de votre IDE (CLion, Visual Studio, etc.)
+.idea/
+.vs/
+*.iml
+
+# Ignorer les binaires de test ou les résultats de test
+tests/*.o
+tests/*.obj
+tests/bin/
+
+# Ignorer les dépendances tierces si elles sont locales
+libs/
