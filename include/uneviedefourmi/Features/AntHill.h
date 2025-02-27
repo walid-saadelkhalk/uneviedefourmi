@@ -22,6 +22,7 @@ public:
 
   void display() const;
 
+  int getRoomCapacity(const string &room) const;
 
   int getNumAnts() const { return numAnts; }
   const unordered_map<string, int>& getRooms() const { return rooms; }

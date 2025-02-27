@@ -1,8 +1,22 @@
-//
-// Created by drvba on 25/02/2025.
-//
+#ifndef ANT_BFS_H
+#define ANT_BFS_H
 
-#ifndef ANTSBFS_H
-#define ANTSBFS_H
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <vector>
+#include "AntHill.h"
 
-#endif //ANTSBFS_H
+class AntBfs {
+public:
+    explicit AntBfs(AntHill &antHill);
+
+    void simulate();
+
+    // void simulateAnts();
+
+private:
+    AntHill &antHill;
+};
+
+#endif

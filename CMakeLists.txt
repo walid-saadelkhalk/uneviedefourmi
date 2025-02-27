@@ -7,4 +7,5 @@ add_executable(uneviedefourmi
         src/main.cpp
 #        src/Features/Ants.cpp
         src/Features/AntHill.cpp
+        src/Features/AntsBfs.cpp
 )

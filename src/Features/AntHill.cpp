@@ -70,4 +70,14 @@ void AntHill::display() const {
     }
 }
 
+int AntHill::getRoomCapacity(const string &room) const {
+    auto it = rooms.find(room);
+    // cout << "🔎 getRoomCapacity() demande : " << room << " -> trouvé : " << it->second << endl;
+    if (it != rooms.end()) {
+        return it->second;
+    }
+    return 1;
+}
+
+
 
