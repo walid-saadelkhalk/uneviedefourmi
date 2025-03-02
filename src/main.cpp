@@ -8,7 +8,7 @@ using namespace std;
 
 int main() {
     AntHill antHill;
-    antHill.loadFromFile("../../assets/fourmiliere_4.txt");
+    antHill.loadFromFile("../../assets/fourmiliere_5.txt");
     antHill.display();
 
     int numAnts = antHill.getNumAnts();

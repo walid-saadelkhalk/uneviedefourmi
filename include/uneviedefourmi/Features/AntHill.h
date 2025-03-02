@@ -14,7 +14,7 @@ private:
   unordered_map<string, int> rooms;
   vector<pair<string, string>> connections;
   vector<vector<int>> laplacianMatrix;
-  vector<string> roomNames; // Pour associer les indices aux noms des salles
+  vector<string> roomNames;
 
 public:
   AntHill();
