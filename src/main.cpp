@@ -1,7 +1,7 @@
-#include "../include/uneviedefourmi/Features/Ants.h"
+#include "../include/uneviedefourmi/Features/AntsDijkstra.h"
 
 int main() {
-    Ants myAnt;
-    myAnt.move();
+    AntsDijkstra ants;
+    ants.run("/Users/mathisserra/Desktop/Github/B2_Laplateforme/uneviedefourmi/fourmiliere.txt", "Sv", "Sd");
     return 0;
 }

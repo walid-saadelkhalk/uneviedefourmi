@@ -17,6 +17,7 @@ endif()
 add_executable(AntColonySimulator 
     src/main.cpp 
     src/Features/Ants.cpp
+    src/Features/AntsDijkstra.cpp  # Ajout de AntsDijkstra.cpp
 )
 
 # Ajout des répertoires d'en-têtes
