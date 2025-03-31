@@ -37,6 +37,7 @@ void AntHill::loadFromFile(const string &filename) {
                 room2 = line.substr(pos + 2);
                 connections.emplace_back(room1, room2);
             }
+            cout << "Connexion ajoutée : " << room1 << " - " << room2 << endl;
         }
 
         else if (isalpha(line[0])) {
@@ -53,6 +54,7 @@ void AntHill::loadFromFile(const string &filename) {
             rooms[room] = capacity;
         }
     }
+
 
     file.close();
 }
