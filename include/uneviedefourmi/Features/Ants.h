@@ -16,6 +16,7 @@ private:
 public:
     Ants(int id, const string& startRoom);
     void moveDFS(const unordered_map<string, vector<string>>& graph, unordered_map<string, int>& roomCapacity, int step);
+    static void displayFinalStats();
     string getCurrentRoom() const;
     bool hasReachedSd() const;
     int getId() const;

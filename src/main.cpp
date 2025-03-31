@@ -35,6 +35,9 @@ int main() {
         ant.moveDFS(graph, roomCapacity, step++);
     }
 
+    Ants::displayFinalStats();
     cout << "\nToutes les fourmis ont terminé leur déplacement." << endl;
     return 0;
+
+
 }
