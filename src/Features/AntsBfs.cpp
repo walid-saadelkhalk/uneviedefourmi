@@ -88,7 +88,7 @@ void AntBfs::simulate() {
                     // Vérifier si elle peut essayer de revenir dans une salle précédente
                     bool hasBacktracked = false;
                     for (const auto &prevRoom : adjacencyList[currentRoom]) {
-                        if (visitedRooms[antId][prevRoom] == 1) { // Si la salle a été visitée une seule fois
+                        if (visitedRooms[antId][prevRoom] == 2) { // Si la salle a été visitée une seule fois
                             ants.push({antId, prevRoom}); // La fourmi revient en arrière
                             visitedRooms[antId][prevRoom]++;
                             stuckTime[antId] = 0;  // Réinitialiser le compteur de temps bloqué
