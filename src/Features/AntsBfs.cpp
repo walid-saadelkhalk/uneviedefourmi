@@ -1,7 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <unordered_map>
-#include <unordered_set>
+#include <chrono>
 #include <vector>
 #include "../../include/uneviedefourmi/Features/AntsBfs.h"
 
@@ -9,33 +9,68 @@ using namespace std;
 
 AntBfs::AntBfs(AntHill &antHill) : antHill(antHill) {}
 
+/*
+===============================================================================
+ Algorithme de recherche en largeur (BFS) appliqué aux fourmis
+----------------------------------------
+ STRUCT:
+----------------------------------------
+- `queue<pair<int, string>> ants;`
+  --> File FIFO contenant les fourmis sous la forme (ID, Salle actuelle).
+
+- `unordered_map<string, vector<string>> adjacencyList;`
+  --> Liste d'adjacence représentant les connexions entre les salles.
+
+- `unordered_map<string, int> roomOccupancy;`
+  --> Stocke le nombre de fourmis présentes dans chaque salle.
+
+- `unordered_map<int, unordered_map<string, int>> visitedRooms;`
+  --> Garde une trace des salles visitées par chaque fourmi pour éviter les boucles infinies.
+
+- `unordered_map<int, int> stuckTime;`
+  --> Enregistre combien de tours une fourmi est restée bloquée.
+
+----------------------------------------
+SIMULATION:
+   - À chaque tour, chaque fourmi tente d'avancer vers une salle voisine non pleine.
+   - Si une fourmi atteint "Sd", elle est retirée du processus.
+   - Si une fourmi ne peut pas avancer, elle attend ou tente de revenir en arrière après 5 tours.
+   - Si aucune fourmi ne bouge pendant un tour complet, la simulation s'arrête.
+===============================================================================
+*/
+
+
 void AntBfs::simulate() {
+    // Chrono du temps global
+    auto startSimulation = chrono::high_resolution_clock::now();
+
     unordered_map<string, int> roomOccupancy;
     unordered_map<string, vector<string>> adjacencyList;
     unordered_map<int, unordered_map<string, int>> visitedRooms;
-    unordered_map<int, int> stuckTime; // Pour compter le temps où une fourmi est bloquée dans une salle
+    unordered_map<int, int> stuckTime;
     queue<pair<int, string>> ants;
 
-    // Construire la liste d'adjacence
     for (const auto &[room1, room2] : antHill.getConnections()) {
         adjacencyList[room1].push_back(room2);
         adjacencyList[room2].push_back(room1);
     }
 
-    // Initialisation des salles et des fourmis
     for (const auto &[room, capacity] : antHill.getRooms()) {
         roomOccupancy[room] = 0;
     }
     for (int i = 1; i <= antHill.getNumAnts(); ++i) {
-        ants.push({i, "Sv"}); // Ajoute les fourmis dans le vestibule initialement
+        ants.push({i, "Sv"});
         roomOccupancy["Sv"]++;
         visitedRooms[i]["Sv"] = 1;
     }
 
-    int timeStep = 0;
-    int stuckThreshold = 5; // Nombre de tours avant qu'une fourmi soit considérée comme bloquée
+    int timeStep = 1;
+    int stuckThreshold = 5;
 
     while (!ants.empty()) {
+        // chrono pour le tour
+        auto startTurn = chrono::high_resolution_clock::now();
+
         int size = ants.size();
         bool anyMoved = false;
 
@@ -44,73 +79,67 @@ void AntBfs::simulate() {
             ants.pop();
 
             if (currentRoom == "Sd") {
-                cout << "Fourmi " << antId << " est arrivée dans Sd !" << endl;
+                cout << "Fourmi " << antId << " est arrivee dans Sd !" << endl;
                 continue;
             }
 
             bool moved = false;
-            vector<string> unvisitedNeighbors; // Pour stocker les voisins non visités
+            vector<string> unvisitedNeighbors;
 
-            // Essayer de déplacer la fourmi vers une salle voisine
             for (const auto &nextRoom : adjacencyList[currentRoom]) {
                 int capacity = antHill.getRoomCapacity(nextRoom);
 
-                // Si la salle est déjà visitée trop souvent, on l'évite
                 if (visitedRooms[antId][nextRoom] > 1) continue;
 
-                // Si la salle suivante n'est pas pleine, la fourmi peut avancer
                 if (nextRoom == "Sd" || roomOccupancy[nextRoom] < capacity) {
-                    // Mise à jour des salles
                     roomOccupancy[currentRoom]--;
                     roomOccupancy[nextRoom]++;
                     visitedRooms[antId][nextRoom]++;
 
                     cout << "Fourmi " << antId << " avance de " << currentRoom << " vers " << nextRoom << endl;
-                    ants.push({antId, nextRoom}); // Ajouter la fourmi à la file pour qu'elle explore
+                    ants.push({antId, nextRoom});
                     moved = true;
                     anyMoved = true;
-                    break;  // Sortir dès qu'une fourmi a bougé
+                    break;
                 }
 
-                // Si la salle est pleine ou bloquée, on l'ajoute à la liste de tentatives
                 unvisitedNeighbors.push_back(nextRoom);
             }
 
-            // Si aucune salle n'est accessible, la fourmi attend
-            if (!moved && !unvisitedNeighbors.empty()) {
-                cout << "Fourmi " << antId << " reste bloquée dans " << currentRoom << endl;
 
-                // Incrémenter le compteur de tours bloqués
+            if (!moved && !unvisitedNeighbors.empty()) {
+                cout << "Fourmi " << antId << " reste bloquee dans " << currentRoom << endl;
+
                 stuckTime[antId]++;
 
-                // Si la fourmi reste bloquée trop longtemps, on l'aide à revenir en arrière
                 if (stuckTime[antId] >= stuckThreshold) {
-                    // Vérifier si elle peut essayer de revenir dans une salle précédente
                     bool hasBacktracked = false;
                     for (const auto &prevRoom : adjacencyList[currentRoom]) {
-                        if (visitedRooms[antId][prevRoom] == 2) { // Si la salle a été visitée une seule fois
-                            ants.push({antId, prevRoom}); // La fourmi revient en arrière
+                        if (visitedRooms[antId][prevRoom] == 2) {
+                            ants.push({antId, prevRoom});
                             visitedRooms[antId][prevRoom]++;
-                            stuckTime[antId] = 0;  // Réinitialiser le compteur de temps bloqué
+                            stuckTime[antId] = 0;
                             hasBacktracked = true;
                             break;
                         }
                     }
 
-                    // Si la fourmi n'a pas pu revenir en arrière, on la garde dans la même salle pour le tour suivant
                     if (!hasBacktracked) {
                         ants.push({antId, currentRoom});
                     }
                 } else {
-                    // Si la fourmi est encore bloquée, on la garde dans la même salle
                     ants.push({antId, currentRoom});
                 }
             }
         }
 
-        // Si aucune fourmi n'a bougé pendant un tour entier, il peut y avoir une impasse
+
+        auto endTurn = chrono::high_resolution_clock::now();
+        chrono::duration<double> turnDuration = endTurn - startTurn;
+        cout << "============================== Temps du tour " << timeStep << " : " << turnDuration.count() << " secondes.\n" << endl;
+
         if (!anyMoved) {
-            cout << "Aucune fourmi n'a bougé pendant ce tour. La simulation est arrêtée." << endl;
+            cout << "Aucune fourmi n'a bouge pendant ce tour. La simulation est arretee." << endl;
             break;
         }
 
@@ -118,5 +147,9 @@ void AntBfs::simulate() {
         cout << "--- Fin du tour " << timeStep << " ---\n";
     }
 
-    cout << "Simulation terminée : toutes les fourmis ont atteint Sd !" << endl;
+    auto endSimulation = chrono::high_resolution_clock::now();
+    chrono::duration<double> simulationDuration = endSimulation - startSimulation;
+    cout << "Temps total de la simulation : " << simulationDuration.count() << " secondes." << endl;
+
+    cout << "\nSimulation terminee : toutes les fourmis ont atteint Sd !" << endl;
 }

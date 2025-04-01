@@ -26,12 +26,12 @@ void checkConnectivity(AntHill &antHill) {
         cout << "Exploration de la salle : " << current << endl;
     }
 
-    cout << "\n Vérification des salles atteignables : \n";
+    cout << "\n Verification des salles atteignables : \n";
     for (const auto &[room, _] : antHill.getRooms()) {
         if (!visited[room]) {
-            cout << " La salle " << room << " n'est PAS connectée à Sd !\n";
+            cout << " La salle " << room << " n'est PAS connectee à Sd !\n";
         } else {
-            cout << "La salle " << room << " est connectée à Sd.\n";
+            cout << "La salle " << room << " est connectze à Sd.\n";
         }
     }
 }
@@ -41,7 +41,7 @@ int main() {
     AntHill antHill;
     antHill.loadFromFile("../../assets/fourmiliere_5.txt");
     // antHill.display();
-    cout << "🔍 Vérification de la connectivité du graphe..." << endl;
+    // cout << "Verification de la connectivite du graphe..." << endl;
     unordered_map<string, bool> visited;
 
     // checkConnectivity(antHill);
